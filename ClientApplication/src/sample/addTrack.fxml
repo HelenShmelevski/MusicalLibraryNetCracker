@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #4555;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TrackController">
+    <children>
+        <AnchorPane prefHeight="49.0" prefWidth="700.0" style="-fx-background-color: #5888;">
+            <children>
+                <Label layoutX="50.0" layoutY="11.0" text="Музыкальная библиотека" textFill="#fcfafa">
+                    <font>
+                        <Font name="Century Gothic Bold" size="21.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <Button fx:id="artistButton" layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Артисты" textFill="#fcfcfc" />
+        <Button fx:id="trackButton" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Треки" textFill="#fcfcfc" />
+        <Button fx:id="genreButton" layoutX="14.0" layoutY="154.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Жанры" textFill="#fcfcfc" />
+        <TableView layoutX="276.0" layoutY="71.0" prefHeight="375.0" prefWidth="378.0">
+            <columns>
+                <TableColumn minWidth="0.0" prefWidth="120.0" text="Имя артиста" />
+                <TableColumn minWidth="0.0" prefWidth="139.0" text="Название трека" />
+            <TableColumn prefWidth="118.0" text="Название жанра" />
+            </columns>
+        </TableView>
+        <Button fx:id="returnButton" layoutX="14.0" layoutY="458.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Назад" textFill="#fcfcfc" />
+        <Button fx:id="addTrackButton" layoutX="276.0" layoutY="458.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Добавить трек" textFill="#fcfcfc" />
+        <Button fx:id="deleteTrackButton" layoutX="535.0" layoutY="458.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Удалить трек" textFill="#fcfcfc" />
+        <Button fx:id="changeTrackButton" layoutX="406.0" layoutY="458.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Изменить трек" textFill="#fcfcfc" />
+    </children>
+</AnchorPane>
