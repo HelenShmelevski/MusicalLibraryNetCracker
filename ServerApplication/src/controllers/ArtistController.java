@@ -1,9 +1,14 @@
 package controllers;
 
 import models.Artist;
+import models.Genre;
+import models.Track;
 import services.ArtistService;
+import services.GenreService;
+import services.TrackService;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ArtistController {
     private final ArtistService artistService;
@@ -19,15 +24,15 @@ public class ArtistController {
         artistService.insert(artist);
     }
 
-    public void updateGenre(int id, Artist newTrack) {
+    public void updateArtist(int id, Artist newTrack) {
         artistService.update(id, newTrack);
     }
 
-    public void deleteGenre(int id) {
+    public void deleteArtist(int id) {
         artistService.delete(id);
     }
 
-    public Artist getGenreById(int id)
+    public Artist getArtistById(int id)
     {
         return artistService.getById(id);
     }

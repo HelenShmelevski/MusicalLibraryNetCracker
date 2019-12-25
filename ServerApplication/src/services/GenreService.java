@@ -1,72 +1,73 @@
 package services;
+import models.Artist;
 import models.Genre;
+import models.Track;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class GenreService {
+    private static final String GENRE_FILE_PATH  = "Genre.json";
+    private static final File GENRE_FILE = new File(GENRE_FILE_PATH);
+
     private final JsonService<Genre> jsonService;
     private final ArtistService artistService;
     private final TrackService trackService;
-
-    private static final String GENRE_FILE_PATH  = "Genre.json";
-    private List<Genre> genreList;
 
     public GenreService(JsonService<Genre> jsonService, ArtistService artistService, TrackService trackService) {
         this.jsonService = jsonService;
         this.artistService = artistService;
         this.trackService = trackService;
-        File genreFile = new File(GENRE_FILE_PATH);
-        if (!genreFile.exists())
-        {
-            genreList = new ArrayList<Genre>();
-        } else {
-            Genre[] genres = jsonService.read(genreFile, Genre[].class);
-            genreList = Arrays.asList(genres);
-        }
     }
 
     public Genre[] getAll() {
-        return genreList.toArray(new Genre[0]);
+        return jsonService.read(GENRE_FILE, Genre[].class);
     }
 
     public void insert(Genre genre){
-        genreList.add(genre);
-        jsonService.write(new File(GENRE_FILE_PATH), genreList.toArray(new Genre[0]));
+        Genre[] allGenres = getAll();
+        List<Genre> genreList = Arrays.asList(allGenres);
+        jsonService.write(GENRE_FILE, genreList.toArray(new Genre[0]));
     }
 
     public void update(int id, Genre newGenre) {
-        int length =  genreList.size();
-        for (int i = 0; i < length; i++) {
-            if (genreList.get(i).getGenreID() == id)
+        Genre[] allGenres = getAll();
+        for (int i = 0; i < allGenres.length; i++) {
+            if (allGenres[i].getGenreID() == id)
             {
-                genreList.get(i).setTitle(newGenre.getTitle());
+                allGenres[i] = newGenre;
             }
         }
-        jsonService.write(new File(GENRE_FILE_PATH), genreList.toArray(new Genre[0]));
+        jsonService.write(GENRE_FILE, allGenres);
     }
 
     public void delete(int id) {
-        int length =  genreList.size();
-        for (int i = 0; i < length; i++) {
+        Genre[] allGenres = getAll();
+        List<Genre> genreList = Arrays.asList(allGenres);
+        for (int i = 0; i < allGenres.length; i++) {
             if (genreList.get(i).getGenreID() == id)
             {
+                Artist[] dependArtists = artistService.getGenreArtist(genreList.get(i).getGenreID());
+                for (Artist artist: dependArtists) {
+                    artistService.delete(artist.getArtistID());
+                }
+
+                Track[] dependTrack = trackService.getTracksByGenre(genreList.get(i).getGenreID());
+                for (Track track: dependTrack) {
+                    trackService.delete(track.getTrackID());
+                }
+
                 genreList.remove(i);
-                length--;
             }
         }
-        jsonService.write(new File(GENRE_FILE_PATH), genreList.toArray(new Genre[0]));
+        jsonService.write(GENRE_FILE, genreList.toArray(new Genre[0]));
     }
 
     public Genre getById(int id)
     {
-        for (Genre genre: genreList) {
-            if (genre.getGenreID() == id) {
-                return genre;
-            }
-        }
-        return null;
+        return Arrays.stream(getAll()).filter(genre -> genre.getGenreID() == id)
+                .findFirst()
+                .orElse(null);
     }
 }

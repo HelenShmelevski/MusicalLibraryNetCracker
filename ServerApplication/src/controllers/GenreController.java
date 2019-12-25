@@ -26,7 +26,6 @@ public class GenreController {
     }
 
     public void deleteGenre(int id) {
-        // удалять каскадно из Артистов и Трэков по жанру
         genreService.delete(id);
     }
 

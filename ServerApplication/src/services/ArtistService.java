@@ -9,80 +9,68 @@ import models.Artist;
 import models.Track;
 
 public class ArtistService {
-    private JsonService<Artist> jsonService;
     private static final String ARTIST_FILE_PATH = "Artist.json";
-    private List<Artist> artistList;
+    private static final File ARTIST_FILE = new File(ARTIST_FILE_PATH);
 
-    public ArtistService(JsonService<Artist> jsonService) {
+    private final JsonService<Artist> jsonService;
+    private final TrackService trackService;
+
+    public ArtistService(JsonService<Artist> jsonService, TrackService trackService) {
         this.jsonService = jsonService;
-        File trackFile = new File(ARTIST_FILE_PATH);
-        if (!trackFile.exists()) {
-            artistList = new ArrayList<Artist>();
-        } else {
-            Artist[] tracks = jsonService.read(trackFile, Artist[].class);
-            artistList = Arrays.asList(tracks);
-        }
+        this.trackService = trackService;
     }
 
     public Artist[] getAll() {
-        return artistList.toArray(new Artist[0]);
+        return jsonService.read(ARTIST_FILE ,Artist[].class);
     }
 
-    public void insert(Artist track) {
-        artistList.add(track);
-        jsonService.write(new File(ARTIST_FILE_PATH), artistList.toArray(new Artist[0]));
+    public void insert(Artist artist) {
+        List<Artist> artistList = Arrays.asList(getAll());
+        artistList.add(artist);
+        jsonService.write(ARTIST_FILE, artistList.toArray(new Artist[0]));
     }
 
     public void update(int id, Artist newArtist) {
-        int length = artistList.size();
-        for (int i = 0; i < length; i++) {
-            if (artistList.get(i).getArtistID() == id) {
-                artistList.get(i).setArtistName(newArtist.getArtistName());
-                artistList.get(i).setCountry(newArtist.getCountry());
-                artistList.get(i).setGenre(newArtist.getGenre());
-                artistList.get(i).setTracks(newArtist.getTracks());
+        Artist[] allArtist = getAll();
+        for (int i = 0; i < allArtist.length; i++) {
+            if (allArtist[i].getArtistID() == id)
+            {
+                allArtist[i] = newArtist;
             }
         }
-        jsonService.write(new File(ARTIST_FILE_PATH), artistList.toArray(new Artist[0]));
+        jsonService.write(ARTIST_FILE, allArtist);
     }
 
     public void delete(int id) {
+        List<Artist> artistList = Arrays.asList(getAll());
         int length = artistList.size();
         for (int i = 0; i < length; i++) {
-            if (artistList.get(i).getArtistID() == id) {
+            if (artistList.get(i).getArtistID() == id)
+            {
+                Track[] dependTracks = trackService.getTracksByArtist(id);
+                for (Track track: dependTracks)
+                {
+                    trackService.delete(track.getTrackID());
+                }
+
                 artistList.remove(i);
-                length--;
             }
         }
-        jsonService.write(new File(ARTIST_FILE_PATH), artistList.toArray(new Artist[0]));
+        jsonService.write(ARTIST_FILE, artistList.toArray(new Artist[0]));
     }
 
     public Artist getById(int id) {
-        for (Artist artist : artistList) {
-            if (artist.getArtistID() == id) {
-                return artist;
-            }
-        }
-        return null;
+        return Arrays.stream(getAll()).filter(artist -> artist.getArtistID() == id)
+                .findFirst()
+                .orElse(null);
     }
 
-    public Artist[] getArtistsByGenreId(int genreId) {
-        List<Artist> artistList = new ArrayList<Artist>();
-        for (Artist artist : this.artistList) {
-            if (artist.getGenre().getGenreID() == genreId) {
-                artistList.add(artist);
-            }
-        }
+    public Artist[] getGenreArtist(int genreId)
+    {
+        Artist[] genreArtists = (Artist[]) Arrays.stream(getAll())
+                .filter(track -> track.getGenre().getGenreID() == genreId)
+                .toArray();
 
-        return artistList.toArray(new Artist[0]);
-    }
-
-    public Track[] getTracksByArtistId(int artistId) {
-        for (Artist artist : artistList) {
-            if (artist.getArtistID() == artistId) {
-                return artist.getTracks().toArray(new Track[0]);
-            }
-        }
-        return null;
+        return genreArtists;
     }
 }

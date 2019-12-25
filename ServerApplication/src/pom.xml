@@ -15,7 +15,6 @@
             <version>2.9.6</version>
         </dependency>
 
-<!--добавить плагин maven complier завтра сделаю))-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
