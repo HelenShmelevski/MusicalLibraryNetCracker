@@ -10,6 +10,15 @@ public class Track implements Serializable {
     private Artist artist;
     private Genre genre;
 
+    public Track(int trackID, String title, String album, float length, Artist artist, Genre genre) {
+        this.trackID = trackID;
+        this.title = title;
+        this.album = album;
+        this.length = length;
+        this.artist = artist;
+        this.genre = genre;
+    }
+
     public Track(String title, Artist artist, float length, String album) {
         this.title = title;
         this.artist = artist;

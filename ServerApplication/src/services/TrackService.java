@@ -24,7 +24,9 @@ public class TrackService {
 
     public void insert(Track track){
         List<Track> trackList = Arrays.asList(getAll());
-        trackList.add(track);
+        int maxId = trackList.stream().mapToInt(o->o.getTrackID()).max().getAsInt();
+        Track newTrack = new Track(maxId+1, track.getTitle(), track.getAlbum(), track.getLength(), track.getArtist(), track.getGenre());
+        trackList.add(newTrack);
         jsonService.write(TRACK_FILE, trackList.toArray(new Track[0]));
     }
 

@@ -26,7 +26,9 @@ public class ArtistService {
 
     public void insert(Artist artist) {
         List<Artist> artistList = Arrays.asList(getAll());
-        artistList.add(artist);
+        int maxId = artistList.stream().mapToInt(o->o.getArtistID()).max().getAsInt();
+        Artist newArtist = new Artist(maxId+1, artist.getArtistName(), artist.getCountry(), artist.getGenre());
+        artistList.add(newArtist);
         jsonService.write(ARTIST_FILE, artistList.toArray(new Artist[0]));
     }
 

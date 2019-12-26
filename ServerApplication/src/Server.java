@@ -168,6 +168,7 @@ public class Server {
                         break;
                     }
                 }
+                boolean finalState = (boolean) reader.readObject();
             } catch (IOException e) {
                 Log("В работе сервера возникла ошибка", e.getMessage(), "Клиент будет отключен");
             } catch (ClassNotFoundException e) {

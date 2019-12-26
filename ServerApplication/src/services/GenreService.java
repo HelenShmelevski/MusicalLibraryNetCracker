@@ -4,8 +4,7 @@ import models.Genre;
 import models.Track;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GenreService {
     private static final String GENRE_FILE_PATH  = "Genre.json";
@@ -28,6 +27,9 @@ public class GenreService {
     public void insert(Genre genre){
         Genre[] allGenres = getAll();
         List<Genre> genreList = Arrays.asList(allGenres);
+        int maxId = genreList.stream().mapToInt(o->o.getGenreID()).max().getAsInt();
+        Genre newGenre = new Genre(maxId+1, genre.getTitle());
+        genreList.add(newGenre);
         jsonService.write(GENRE_FILE, genreList.toArray(new Genre[0]));
     }
 

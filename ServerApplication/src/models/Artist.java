@@ -14,7 +14,7 @@ public class Artist implements Serializable {
         this.artistID = artistID;
     }
 
-    public Artist(int artistID, String artistName, String country, Genre genre, ArrayList<Track> tracks) {
+    public Artist(int artistID, String artistName, String country, Genre genre) {
         this(artistID, artistName);
         this.country = country;
         this.genre = genre;
