@@ -26,11 +26,11 @@
         <Button fx:id="artistButton" layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Артисты" textFill="#fcfcfc" />
         <Button fx:id="trackButton" layoutX="14.0" layoutY="113.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Треки" textFill="#fcfcfc" />
         <Button fx:id="genreButton" layoutX="14.0" layoutY="154.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="119.0" style="-fx-background-color: #5888; -fx-background-radius: 5;" text="Жанры" textFill="#fcfcfc" />
-      <TableView layoutX="276.0" layoutY="71.0" prefHeight="375.0" prefWidth="378.0">
+      <TableView fx:id="artistTable" layoutX="276.0" layoutY="71.0" prefHeight="375.0" prefWidth="378.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="Id" />
-          <TableColumn prefWidth="195.0" text="Имя артиста" />
-            <TableColumn prefWidth="107.0" text="Жанр" />
+          <TableColumn prefWidth="75.0" text="Id" fx:id="ArtistIdColumn"/>
+          <TableColumn prefWidth="195.0" text="Имя артиста" fx:id="NameColumn"/>
+            <TableColumn prefWidth="107.0" text="Жанр" fx:id="GenreColumn"/>
         </columns>
       </TableView>
 

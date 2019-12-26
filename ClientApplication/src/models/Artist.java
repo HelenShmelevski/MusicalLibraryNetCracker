@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Artist {
+public class Artist implements Serializable {
     private int artistID;
     private String artistName;
     private String country;
@@ -15,6 +16,7 @@ public class Artist {
         this.artistID = artistID;
         this.tracks = new ArrayList<Track>();
     }
+
 
     public Artist(int artistID, String artistName, String country, Genre genre, ArrayList<Track> tracks) {
         this(artistID, artistName);

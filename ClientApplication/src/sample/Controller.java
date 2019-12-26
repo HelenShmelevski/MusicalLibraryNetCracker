@@ -31,19 +31,19 @@ public class Controller {
     @FXML
     void initialize() {
         artistButton.setOnAction(event -> {
-            setSceneOnStage("artist.fxml");
+            setSceneOnStage("artist.fxml", artistButton);
         });
 
         trackButton.setOnAction(event -> {
-            setSceneOnStage("track.fxml");
+            setSceneOnStage("track.fxml", trackButton);
 
         });
         genreButton.setOnAction(event -> {
-            setSceneOnStage("genre.fxml");
+            setSceneOnStage("genre.fxml", genreButton);
         });
     }
 
-    protected void setSceneOnStage(String titleScene) {
+    protected void setSceneOnStage(String titleScene, Button button) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(titleScene));
         try {
@@ -52,7 +52,9 @@ public class Controller {
             e.printStackTrace();
         }
         Parent root = loader.getRoot();
-        Main.primaryStage.setScene(new Scene(root));
+        Scene scene = button.getScene();
+        scene.setRoot(root);
+        Main.primaryStage.setScene(scene);
         Main.primaryStage.show();
     }
 }

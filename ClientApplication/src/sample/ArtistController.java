@@ -2,6 +2,7 @@ package sample;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -10,9 +11,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Artist;
+import models.CommandType;
+import models.Genre;
+import models.ModelType;
+import models.Track;
 
 public class ArtistController {
 
@@ -42,10 +51,31 @@ public class ArtistController {
 
     @FXML
     private Button deleteArtistButton;
+    @FXML
+    private TableView<Artist> artistTable;
 
+    @FXML
+    private TableColumn<Artist, String> ArtistIdColumn;
+
+    @FXML
+    private TableColumn<Artist, String> NameColumn;
+
+    @FXML
+    private TableColumn<Artist, Genre> GenreColumn;
+
+    private ClientSocket socket;
 
     @FXML
     void initialize() {
+        socket = new ClientSocket();
+        socket.connect("localhost",1234);
+        ArtistIdColumn.setCellValueFactory(new PropertyValueFactory<Artist, String>("artistID"));
+        NameColumn.setCellValueFactory(new PropertyValueFactory<Artist, String>("artistName"));
+        GenreColumn.setCellValueFactory(new PropertyValueFactory<Artist, Genre>("genre"));
+
+        artistTable.getItems().setAll();
+        updateArtistTable();
+
         genreButton.setOnAction(event -> {
             setSceneOnStage("genre.fxml");
         });
@@ -61,10 +91,13 @@ public class ArtistController {
 
             Optional<String> result = dialog.showAndWait();
 
-            //ЕСЛИ ИМЯ ВВЕДЕНО, ТО...СЕРВЕР ЧТО-ТО ДЕЛАЕТ
-//            result.ifPresent(name -> {
-//                this.label.setText(name);
-//            });
+            result.ifPresent(name -> {
+               addNewArtist();
+
+            });
+
+            artistTable.getItems().setAll();
+            updateArtistTable();
         });
         deleteArtistButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("ID артиста");
@@ -128,5 +161,26 @@ public class ArtistController {
         Main.primaryStage.show();
     }
 
+    private void updateArtistTable() {
+        socket.sendObject(CommandType.GET_ALL);
+        socket.sendObject(ModelType.ARTIST);
+
+        Artist[] artists = (Artist[]) socket.getData();
+        if(artists != null) {
+            for (Artist artist : artists) {
+                artistTable.getItems().add(artist);
+            }
+        }
+    }
+
+    private void addNewArtist() {
+        socket.sendObject(CommandType.ADD);
+        socket.sendObject(ModelType.ARTIST);
+
+      //  Artist newArtist = new Artist( id, name, "unknown", new Genre(3,"pam"), new ArrayList<Track>());
+        Artist newArtist = new Artist();
+        socket.sendObject(newArtist);
+
+    }
 
 }

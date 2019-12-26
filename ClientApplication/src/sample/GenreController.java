@@ -62,9 +62,12 @@ public class GenreController {
 
     @FXML
     void initialize() {
-        GenreIdColumn.setCellValueFactory(new PropertyValueFactory<Genre, String>("Id"));
-        TitleColumn.setCellValueFactory(new PropertyValueFactory<Genre, String>("Название жанра"));
-        tableView.getItems().setAll(update());
+        socket = new ClientSocket();
+        socket.connect("localhost", 1234);
+        GenreIdColumn.setCellValueFactory(new PropertyValueFactory<Genre, String>("genreID"));
+        TitleColumn.setCellValueFactory(new PropertyValueFactory<Genre, String>("title"));
+        genreTable.getItems().setAll();
+        updateGenreTable();
 
         artistButton.setOnAction(event -> {
             setSceneOnStage("artist.fxml");
@@ -75,10 +78,6 @@ public class GenreController {
 
         });
 
-
-
-
-
         addGenreButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("Название жанра");
             dialog.setTitle("Добавление нового жанра");
@@ -86,19 +85,19 @@ public class GenreController {
             dialog.setContentText("Название жанра:");
 
             Optional<String> result = dialog.showAndWait();
-            result.ifPresent((title) -> {
+//            result.ifPresent((title) -> {
+            if (result.isPresent()){
                 Genre genre = new Genre();
-                genre.setTitle(title);
-                 genreTable.getItems().add(genre);
-//                socket.sendObject(CommandType.ADD);
-//                socket.sendObject(ModelType.GENRE);
-//                socket.sendObject(genre);
+                genre.setTitle(result.get());
+                genreTable.getItems().add(genre);
+                socket.sendObject(CommandType.ADD);
+                socket.sendObject(ModelType.GENRE);
+                socket.sendObject(genre);
 //
 //                boolean state = (boolean) socket.getData();
-//                updateGenreTable();
-            });
+                updateGenreTable();
+            }});
             //TODO: передать параметры в жанр, чтобы передавались на сервер
-
 
 
             //socket.disconnect();
@@ -106,7 +105,7 @@ public class GenreController {
 //            result.ifPresent(name -> {
 //                this.label.setText(name);
 //            });
-        });
+//        });
         deleteGenreButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("ID жанра");
 
@@ -116,11 +115,10 @@ public class GenreController {
 
             Optional<String> result = dialog.showAndWait();
 
-            //ЕСЛИ ID ВВЕДЕНО, ТО...СЕРВЕР ЧТО-ТО ДЕЛАЕТ
 //            result.ifPresent(name -> {
 //                this.label.setText(name);
-//            });
-        });
+            });
+//        });
 
         changeGenreButton.setOnAction(event -> {
             TextInputDialog dialog = new TextInputDialog("ID жанра");
@@ -147,8 +145,7 @@ public class GenreController {
 //            result.ifPresent(name -> {
 //                this.label.setText(name);
 //            });
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             });
@@ -175,7 +172,7 @@ public class GenreController {
         socket.sendObject(ModelType.GENRE);
 
         Genre[] genres = (Genre[]) socket.getData();
-        for (Genre genre: genres) {
+        for (Genre genre : genres) {
             genreTable.getItems().add(genre);
         }
     }
